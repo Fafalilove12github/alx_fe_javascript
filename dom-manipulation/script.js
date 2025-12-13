@@ -59,7 +59,7 @@ function createAddQuoteForm() {
   formContainer.appendChild(exportButton);
   formContainer.appendChild(importInput);
 
-  return formContainer;
+  document.getElementById('formContainer').appendChild(formContainer); // Append to formContainer
 }
 
 // Function to add a new quote
@@ -77,7 +77,7 @@ function addQuote() {
 
 // Function to export quotes as a JSON file
 function exportQuotes() {
-  const jsonString = JSON.stringify(quotes);
+  const jsonString = JSON.stringify(quotes, null, 2); // Pretty print JSON
   const blob = new Blob([jsonString], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
 
@@ -105,9 +105,8 @@ function importFromJsonFile(event) {
 document.addEventListener('DOMContentLoaded', () => {
   loadQuotes(); // Load existing quotes from local storage
   showRandomQuote(); // Display a random quote if available
-  const formContainer = createAddQuoteForm();
-  document.body.appendChild(formContainer);
+  createAddQuoteForm(); // Create and display the add quote form
 });
 
-// Adding event listener for showing a new quote
+// Event listener for showing a new quote
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
