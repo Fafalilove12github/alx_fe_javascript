@@ -114,3 +114,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Event listener for showing a new quote
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
+// Sample quotes array
+const quotes = [
+  { text: "Be yourself; everyone else is already taken.", category: "inspiration" },
+  { text: "Two things are infinite: the universe and human stupidity; and I'm not sure about the universe.", category: "humor" },
+  { text: "So many books, so little time.", category: "reading" },
+  // Add more quotes as needed...
+];
+
+// Function to populate the categories in the dropdown
+function populateCategories() {
+  const categoryFilter = document.getElementById('categoryFilter');
+  const categories = new Set();
+
+  // Get unique categories
+  quotes.forEach(quote => {
+    categories.add(quote.category);
+  });
+
+  // Populate dropdown with categories
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.innerText = category;
+    categoryFilter.appendChild(option);
+  });
+
+  const lastSelected = localStorage.getItem('selectedCategory') || 'all';
+  categoryFilter.value = lastSelected;
+  filterQuotes();
+}
+
+// Function to filter quotes based on selected category
+function filterQuotes() {
+  const selectedCategory = document.getElementById('categoryFilter').value;
+  localStorage.setItem('selectedCategory', selectedCategory); // Store selected category in local storage
+
+  const quoteDisplay = document.getElementById('quoteDisplay');
+  quoteDisplay.innerHTML = ''; // Clear existing quotes
+
+  // Filter quotes based on selected category
+  const filteredQuotes = quotes.filter(quote => 
+    selectedCategory === 'all' || quote.category === selectedCategory
+  );
+
+  // Display filtered quotes
+  if (filteredQuotes.length > 0) {
+    filteredQuotes.forEach(quote => {
+      const quoteElement = document.createElement('div');
+      quoteElement.innerText = quote.text;
+      quoteDisplay.appendChild(quoteElement);
+    });
+  } else {
+    quoteDisplay.innerText = 'No quotes available for this category.';
+  }
+}
+
+// Function to add a quote and update categories
+function addQuote(newQuote) {
+  quotes.push(newQuote);
+  const categoryFilter = document.getElementById('categoryFilter');
+
+  // Add new category to the dropdown if it doesn't exist
+  if (![...categoryFilter.options].map(option => option.value).includes(newQuote.category)) {
+    const option = document.createElement('option');
+    option.value = newQuote.category;
+    option.innerText = newQuote.category;
+    categoryFilter.appendChild(option);
+  }
+
+  filterQuotes(); // Refresh displayed quotes
+}
+
+// Initial population of categories
+populateCategories();
